@@ -1,16 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import heroes from '../components/heroesList/heroesSlice';
 import filters from '../components/heroesFilters/heroesFiltersSlice';
+import { apiSlice } from '../api/apiSlice';
 
-
-// const stingMiddleware = (store) => (next) => (action) => {
-//     if (typeof action === 'string') {
-//         return next({
-//             type: action
-//         })
-//     }
-//     return next(action)
-// }
+const stingMiddleware = (store) => (next) => (action) => {
+    if (typeof action === 'string') {
+        return next({
+            type: action
+        })
+    }
+    return next(action)
+}
 
 // const enhancer = (createStore) => (...args) => {
 //     const store = createStore(...args);
@@ -36,8 +35,8 @@ import filters from '../components/heroesFilters/heroesFiltersSlice';
 //             )
 
 const store = configureStore({
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(),
-    reducer: {heroes, filters},
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(stingMiddleware, apiSlice.middleware),
+    reducer: {filters, [apiSlice.reducerPath]: apiSlice.reducer},
     devTools: process.env.NODE_ENV !== 'production',
 })
 
